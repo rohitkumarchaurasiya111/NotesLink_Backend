@@ -3,6 +3,7 @@ package in.noteslink.controller;
 import in.noteslink.models.dto.MaterialDTO;
 import in.noteslink.models.dto.SubjectDTO;
 import in.noteslink.models.enums.Years;
+import in.noteslink.service.CollegeService;
 import in.noteslink.service.MaterialService;
 import in.noteslink.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class UserController {
     @Autowired
     private SubjectService subjectService;
 
+    @Autowired
+    private CollegeService collegeService;
+
     @GetMapping("/subjects/{subjectId}/materials")
     public ResponseEntity<List<MaterialDTO>> getAllMaterialsForGivenSubjectId(@PathVariable Long subjectId){
         List<MaterialDTO> listOfMaterials = materialService.getAllMaterialsForGivenSubjectId(subjectId);
@@ -34,6 +38,13 @@ public class UserController {
     public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificYear(@PathVariable String year){
         Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
         List<SubjectDTO> subjects = subjectService.getAllSubjectsForSpecificYear(enumYear);
+        return ResponseEntity.ok(subjects);
+    }
+
+    @GetMapping("/subjects/college/{collegeId}/year/{year}")
+    public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificCollegeAndYear(@PathVariable String year, @PathVariable Long collegeId){
+        Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
+        List<SubjectDTO> subjects = subjectService.getSubjectsByYearsAndCollege(collegeId, enumYear);
         return ResponseEntity.ok(subjects);
     }
 

@@ -30,4 +30,19 @@ public class SubjectServiceImpl implements SubjectService {
                 s.getBranch().name()
         )).collect(Collectors.toList());
     }
+
+    @Override
+    public List<SubjectDTO> getSubjectsByYearsAndCollege(Long collegeId, Years year) {
+        List<Subject> subjects = subjectRepository.findForCollegeByYear(collegeId, year);
+
+        return subjects.stream().map(s -> new SubjectDTO(
+                s.getId(),
+                s.getCollege() != null ? s.getCollege().getId() : null,
+                s.getName(),
+                s.getImageURL(),
+                s.getDescription(),
+                s.getYear().name(),
+                s.getBranch().name()
+        )).collect(Collectors.toList());
+    }
 }
