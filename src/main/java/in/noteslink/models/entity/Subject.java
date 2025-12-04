@@ -13,8 +13,9 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //If college ID is null, it represents Global Subject
     @ManyToOne
-    @JoinColumn(name = "college_id" , nullable = false)            //Foreign key
+    @JoinColumn(name = "college_id" , nullable = true)            //Foreign key
     private College college;
 
     @Column(name = "name", nullable = false)
@@ -41,7 +42,7 @@ public class Subject {
 /*
         * CREATE TABLE subjects (
             id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            college_id BIGINT NOT NULL,
+            college_id BIGINT,
             `name` VARCHAR(255) NOT NULL,
             image_url VARCHAR(500),
             `description` TEXT,
