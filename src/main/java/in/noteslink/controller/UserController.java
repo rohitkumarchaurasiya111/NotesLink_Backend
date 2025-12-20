@@ -8,15 +8,13 @@ import in.noteslink.service.MaterialService;
 import in.noteslink.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
@@ -25,8 +23,6 @@ public class UserController {
     @Autowired
     private SubjectService subjectService;
 
-    @Autowired
-    private CollegeService collegeService;
 
     @GetMapping("/subjects/{subjectId}/materials")
     public ResponseEntity<List<MaterialDTO>> getAllMaterialsForGivenSubjectId(@PathVariable Long subjectId){
@@ -34,18 +30,17 @@ public class UserController {
         return ResponseEntity.ok(listOfMaterials);
     }
 
-    @GetMapping("/subjects/year/{year}")
-    public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificYear(@PathVariable String year){
-        Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
-        List<SubjectDTO> subjects = subjectService.getAllSubjectsForSpecificYear(enumYear);
-        return ResponseEntity.ok(subjects);
-    }
-
     @GetMapping("/subjects/college/{collegeId}/year/{year}")
     public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificCollegeAndYear(@PathVariable String year, @PathVariable Long collegeId){
         Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
         List<SubjectDTO> subjects = subjectService.getSubjectsByYearsAndCollege(collegeId, enumYear);
         return ResponseEntity.ok(subjects);
+    }
+
+    @GetMapping("/subjects/{subjectId}")
+    public ResponseEntity<SubjectDTO> getSpecificSubjectDetails(@PathVariable Long subjectId){
+        SubjectDTO subjectDTO = subjectService.getSpecificSubjectDetails(subjectId);
+        return ResponseEntity.ok(subjectDTO);
     }
 
 }
