@@ -2,6 +2,7 @@ package in.noteslink.controller;
 
 import in.noteslink.models.dto.MaterialDTO;
 import in.noteslink.models.dto.SubjectDTO;
+import in.noteslink.models.enums.MaterialType;
 import in.noteslink.models.enums.Years;
 import in.noteslink.service.CollegeService;
 import in.noteslink.service.MaterialService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -23,13 +25,6 @@ public class UserController {
     @Autowired
     private SubjectService subjectService;
 
-
-    @GetMapping("/subjects/{subjectId}/materials")
-    public ResponseEntity<List<MaterialDTO>> getAllMaterialsForGivenSubjectId(@PathVariable Long subjectId){
-        List<MaterialDTO> listOfMaterials = materialService.getAllMaterialsForGivenSubjectId(subjectId);
-        return ResponseEntity.ok(listOfMaterials);
-    }
-
     @GetMapping("/subjects/college/{collegeId}/year/{year}")
     public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificCollegeAndYear(@PathVariable String year, @PathVariable Long collegeId){
         Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
@@ -41,6 +36,12 @@ public class UserController {
     public ResponseEntity<SubjectDTO> getSpecificSubjectDetails(@PathVariable Long subjectId){
         SubjectDTO subjectDTO = subjectService.getSpecificSubjectDetails(subjectId);
         return ResponseEntity.ok(subjectDTO);
+    }
+
+    @GetMapping("/subjects/{subjectId}/materials")
+    public ResponseEntity<Map<MaterialType, List<MaterialDTO>>> getAllMaterialsForGivenSubjectId(@PathVariable Long subjectId){
+        Map<MaterialType, List<MaterialDTO>> listOfMaterials = materialService.getAllMaterialsForGivenSubjectId(subjectId);
+        return ResponseEntity.ok(listOfMaterials);
     }
 
 }
