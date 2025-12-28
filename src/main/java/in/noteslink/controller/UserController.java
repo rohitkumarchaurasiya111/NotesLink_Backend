@@ -2,6 +2,7 @@ package in.noteslink.controller;
 
 import in.noteslink.models.dto.MaterialDTO;
 import in.noteslink.models.dto.SubjectDTO;
+import in.noteslink.models.entity.College;
 import in.noteslink.models.enums.MaterialType;
 import in.noteslink.models.enums.Years;
 import in.noteslink.service.CollegeService;
@@ -25,6 +26,9 @@ public class UserController {
     @Autowired
     private SubjectService subjectService;
 
+    @Autowired
+    private CollegeService collegeService;
+
     @GetMapping("/subjects/college/{collegeId}/year/{year}")
     public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificCollegeAndYear(@PathVariable String year, @PathVariable Long collegeId){
         Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
@@ -44,4 +48,9 @@ public class UserController {
         return ResponseEntity.ok(listOfMaterials);
     }
 
+    @GetMapping("/colleges")
+    public ResponseEntity<List<College>> getAllCollegesDetails(){
+        List<College> colleges = collegeService.getAllCollegeDetails();
+        return ResponseEntity.ok(colleges);
+    }
 }
