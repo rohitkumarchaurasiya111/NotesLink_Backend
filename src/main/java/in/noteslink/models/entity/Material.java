@@ -2,10 +2,16 @@ package in.noteslink.models.entity;
 
 import in.noteslink.models.enums.MaterialType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "materials")
 public class Material {
     @Id
@@ -30,6 +36,10 @@ public class Material {
     @Column(name = "is_premium", nullable = false)
     private Boolean isPremium = Boolean.TRUE;
 
+    // This control the order on which Materials will be display in Frontend
+    @Column(name = "display_order", nullable = false)
+    private Long displayOrder;
+
 }
 
 //-----------------DATABASE STRUCTURE------------
@@ -39,9 +49,14 @@ public class Material {
             subject_id BIGINT NOT NULL,
             title VARCHAR(255) NOT NULL,
             `type` VARCHAR(50) NOT NULL,
+
+            -- Controls order inside NOTES / PYQ / etc.
+            display_order BIGINT NOT NULL,
+
             drive_link VARCHAR(10000) NOT NULL,
             is_premium BOOLEAN DEFAULT TRUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (subject_id) REFERENCES subjects(id)
-        );
+
+            FOREIGN KEY (subject_id) REFERENCES subjects(id),
+);
 */
