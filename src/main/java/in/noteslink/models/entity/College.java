@@ -22,7 +22,7 @@ public class College {
     @Column(name = "email_domain")          //We need to write column name explicitly becasue the variableName is different.
     private String emailDomain;
 
-    @Column(name = "logo_url")
+    @Column(name = "logo_url", length = 1000)
     private String logoURL;
 
     @Column(name = "created_at", updatable = false, insertable = false)     //Database automatically fills this Field

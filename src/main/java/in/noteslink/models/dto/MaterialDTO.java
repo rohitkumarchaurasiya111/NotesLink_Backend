@@ -22,7 +22,6 @@ public class MaterialDTO {
     @NotBlank(message = "Material Type cannot be Blank")
     private String type;
 
-    @NotBlank(message = "Drive Link is Required")
     private String driveLink;
     private Boolean isPremium;
 

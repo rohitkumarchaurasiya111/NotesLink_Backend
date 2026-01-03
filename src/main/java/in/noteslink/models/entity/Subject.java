@@ -27,7 +27,7 @@ public class Subject {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 1000)
     private String imageURL = "https://res.cloudinary.com/dfdusmc9k/image/upload/v1766859518/SubjectImageGirl_m6maff.png";
 //    https://res.cloudinary.com/dfdusmc9k/image/upload/v1766859483/SubjectImage_jydtuy.png   - This link can also be used
 

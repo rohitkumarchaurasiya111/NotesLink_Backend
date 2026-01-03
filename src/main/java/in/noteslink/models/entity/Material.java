@@ -30,7 +30,7 @@ public class Material {
     @Column(name = "type")
     private MaterialType type;
 
-    @Column(name = "drive_link", nullable = false)
+    @Column(name = "drive_link", nullable = false, length = 10000)
     private String driveLink;
 
     @Column(name = "is_premium", nullable = false)

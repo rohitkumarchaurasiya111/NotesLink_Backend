@@ -1,13 +1,13 @@
 package in.noteslink.controller;
 
-import in.noteslink.models.dto.MaterialDTO;
-import in.noteslink.models.dto.SubjectDTO;
+import in.noteslink.models.dto.*;
+import in.noteslink.models.entity.Book;
 import in.noteslink.models.entity.College;
+import in.noteslink.models.enums.BookCategory;
 import in.noteslink.models.enums.MaterialType;
+import in.noteslink.models.enums.ProjectDifficulty;
 import in.noteslink.models.enums.Years;
-import in.noteslink.service.CollegeService;
-import in.noteslink.service.MaterialService;
-import in.noteslink.service.SubjectService;
+import in.noteslink.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +29,18 @@ public class UserController {
     @Autowired
     private CollegeService collegeService;
 
+    @Autowired
+    private BookService bookService;
+
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private OtherProductService otherProductService;
+
+    /*
+    * Subject Controller
+    * */
     @GetMapping("/subjects/college/{collegeId}/year/{year}")
     public ResponseEntity<List<SubjectDTO>> getAllSubjectsForSpecificCollegeAndYear(@PathVariable String year, @PathVariable Long collegeId){
         Years enumYear = Years.valueOf(year.toUpperCase());      //Converting year from String to Enum for further Processing
@@ -48,9 +60,56 @@ public class UserController {
         return ResponseEntity.ok(listOfMaterials);
     }
 
+    /*
+    * College Controller
+    * */
     @GetMapping("/colleges")
     public ResponseEntity<List<College>> getAllCollegesDetails(){
         List<College> colleges = collegeService.getAllCollegeDetails();
         return ResponseEntity.ok(colleges);
+    }
+
+    /*
+    * Book Controller
+    * */
+    @GetMapping("/books")
+    public ResponseEntity<List<BookDTO>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllActiveBooks());
+    }
+
+    @GetMapping("/books/category/{category}")
+    public ResponseEntity<List<BookDTO>> getBooksByCategory(
+            @PathVariable String category) {
+
+        BookCategory bookCategory = BookCategory.valueOf(category.toUpperCase());
+        return ResponseEntity.ok(
+                bookService.getActiveBooksByCategory(bookCategory)
+        );
+    }
+
+    /*
+    * Project Controller
+    * */
+    @GetMapping("/projects")
+    public ResponseEntity<List<ProjectDTO>> getAllProjects() {
+        return ResponseEntity.ok(projectService.getAllActiveProjects());
+    }
+
+    @GetMapping("/projects/difficulty/{difficulty}")
+    public ResponseEntity<List<ProjectDTO>> getProjectsByDifficulty(
+            @PathVariable String difficulty) {
+        ProjectDifficulty level =
+                ProjectDifficulty.valueOf(difficulty.toUpperCase());
+        return ResponseEntity.ok(
+                projectService.getActiveProjectsByDifficulty(level)
+        );
+    }
+
+    /*
+    * OtherProduct Controller
+    * */
+    @GetMapping("/otherproducts")
+    public ResponseEntity<List<OtherProductDTO>> getAllProducts() {
+        return ResponseEntity.ok(otherProductService.getAllActiveProducts());
     }
 }
