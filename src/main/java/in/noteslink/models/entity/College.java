@@ -1,28 +1,41 @@
 package in.noteslink.models.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
 @Table(name = "colleges")
 public class College {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
+    @NotBlank
+    @Size(max = 255)
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+
+    @NotBlank
+    @Size(max = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String subdomain;
 
-    @Column(name = "email_domain")          //We need to write column name explicitly becasue the variableName is different.
+    @NotBlank
+    @Size(max = 100)
+    @Column(name = "email_domain", nullable = false, length = 100)
     private String emailDomain;
 
-    @Column(name = "logo_url", length = 1000)
+    @Column(name = "logo_url", length = 500)
     private String logoURL;
 
     @Column(name = "created_at", updatable = false, insertable = false)     //Database automatically fills this Field

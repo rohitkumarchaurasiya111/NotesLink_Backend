@@ -19,7 +19,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //College ID cannot be Null, For Global/Platform Related Subjects, Colleg_id = 1;
+    //College ID cannot be Null, For Global/Platform Related Subjects, College_id = 1;
     @ManyToOne
     @JoinColumn(name = "college_id" , nullable = false)            //Foreign key
     private College college;
