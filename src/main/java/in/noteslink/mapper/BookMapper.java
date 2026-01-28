@@ -38,6 +38,7 @@ public class BookMapper {
                 .bookCategory(enumCategory)
                 .driveLink(dto.getDriveLink())
                 .displayOrder(dto.getDisplayOrder())
+                .slug(dto.getSlug())
                 .isActive(dto.getIsActive())
                 .build();
     }

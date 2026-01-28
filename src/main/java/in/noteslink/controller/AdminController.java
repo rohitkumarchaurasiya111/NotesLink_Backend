@@ -5,8 +5,7 @@ import in.noteslink.models.dto.BookDTO;
 import in.noteslink.models.dto.MaterialDTO;
 import in.noteslink.models.dto.ProjectDTO;
 import in.noteslink.models.dto.SubjectDTO;
-import in.noteslink.models.entity.Material;
-import in.noteslink.models.entity.Subject;
+import in.noteslink.models.entity.Book;
 import in.noteslink.service.BookService;
 import in.noteslink.service.MaterialService;
 import in.noteslink.service.ProjectService;
@@ -16,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin
@@ -46,7 +45,7 @@ public class AdminController {
     //Valid - checks the validation that we have written in SubjectDTO, if fails - Spring returns 400 Bad Request
     @PostMapping("/subject")
     public ResponseEntity<SubjectDTO> addSubject(@Valid @RequestBody SubjectDTO subjectDTO){
-        SubjectDTO responseSubjectDTO = subjectService.addSubject(subjectDTO);
+        SubjectDTO responseSubjectDTO = subjectService.addOrUpdateSubject(subjectDTO);
         return  ResponseEntity.status(HttpStatus.CREATED).body(responseSubjectDTO);
     }
 
@@ -92,14 +91,32 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBookDTO);
     }
 
+    @GetMapping("/book/all")
+    public ResponseEntity<List<BookDTO>> getAllBooksEitherActiveOrInActive(){
+        return ResponseEntity.ok(bookService.getAllBooksEitherActiveOrInactive());
+    }
+
     /*
     * Project Service
     * */
+    @GetMapping("/project/all")
+    public ResponseEntity<List<ProjectDTO>> getAllProjectsEitherActiveOrInActive(){
+        return ResponseEntity.ok(projectService.getAllProjectsEitherActiveOrInActive());
+    }
+
     @PostMapping("/project")
     public ResponseEntity<ProjectDTO> createProject(
             @Valid @RequestBody ProjectDTO projectDTO) {
 
         ProjectDTO createdProject = projectService.createProject(projectDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+    }
+
+    @PutMapping("/project/{id}")
+    public ResponseEntity<ProjectDTO> updateProject(@Valid @RequestBody ProjectDTO projectDTO,
+                                                    @PathVariable Long id){
+        if(!Objects.equals(id, projectDTO.getId())) throw new BadRequestException("Contact Admin, Project Id in JSON != Id in API Call");
+        ProjectDTO responseProjectDTO = projectService.updateProject(projectDTO, id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseProjectDTO);
     }
 }

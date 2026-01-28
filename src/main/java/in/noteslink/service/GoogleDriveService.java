@@ -2,6 +2,7 @@ package in.noteslink.service;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.FileContent;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
@@ -22,9 +23,9 @@ import java.util.Map;
 public class GoogleDriveService {
 
     // --- CREDENTIALS HERE ---
-    private static final String CLIENT_ID = "180210663874-3oeba856s764g0gc13f9voqb73hhfo9m.apps.googleusercontent.com";
-    private static final String CLIENT_SECRET = "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";
-    private static final String REFRESH_TOKEN = "1//04WX8c82ts6qXCgYIARAAGAQSNwF-L9IrzeLjXM9ynmbMS2EaFMlGeetHAXKF7Z3YOvn7hltKSMVTPOjZ_M0oA3kmRM_wG2Cx8OY";
+    private static final String CLIENT_ID = "180210663874-7c66sclnjrnaterpj1bspgmvb1hmu86r.apps.googleusercontent.com";
+    private static final String CLIENT_SECRET = "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";
+    private static final String REFRESH_TOKEN = "1//04zybOBAOCryLCgYIARAAGAQSNwF-L9IrL9f0krgfkpqI25FNbZPPucACNB7nNFtPBGpC4ymgQYVRQpO1qzwZM7QwUbVe3KQXnoA";
 
     public Map<String, String> uploadFile(MultipartFile multipartFile, String targetFolderId, String fileName) throws Exception {
 
@@ -35,11 +36,19 @@ public class GoogleDriveService {
                 .setRefreshToken(REFRESH_TOKEN)
                 .build();
 
+        //For increasing the Timeout, in case of Larger files
+        HttpRequestInitializer requestInitializer = request -> {
+            new HttpCredentialsAdapter(credentials).initialize(request);
+            request.setConnectTimeout(3 * 60 * 1000); // 3 minutes
+            request.setReadTimeout(3 * 60 * 1000);    // 3 minutes
+        };
+
+
         // 2. Initialize the Drive Client
         Drive service = new Drive.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credentials))
+                requestInitializer)
                 .setApplicationName("NotesLink")
                 .build();
 

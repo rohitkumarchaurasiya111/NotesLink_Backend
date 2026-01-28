@@ -53,7 +53,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public SubjectDTO addSubject(SubjectDTO subjectDTO) {
+    public SubjectDTO addOrUpdateSubject(SubjectDTO subjectDTO) {
 
         Years enumYear;
         Branches enumBranch;
@@ -69,6 +69,11 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = SubjectMapper.toSubjectEntity(subjectDTO,college, enumYear, enumBranch);
 
-        return SubjectMapper.toSubjectDTO(subjectRepository.save(subject));
+        try{
+            subject = subjectRepository.save(subject);
+        }catch(Exception e){
+            throw new BadRequestException("Some Error Occured");
+        }
+        return SubjectMapper.toSubjectDTO(subject);
     }
 }

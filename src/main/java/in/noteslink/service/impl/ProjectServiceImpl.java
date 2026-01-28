@@ -1,5 +1,6 @@
 package in.noteslink.service.impl;
 
+import in.noteslink.exception.BadRequestException;
 import in.noteslink.mapper.ProjectMapper;
 import in.noteslink.models.dto.ProjectDTO;
 import in.noteslink.models.entity.Project;
@@ -54,6 +55,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /* ================= ADMIN SIDE ================= */
+    @Override
+    public List<ProjectDTO> getAllProjectsEitherActiveOrInActive() {
+        return projectRepository.findAllByOrderByDisplayOrderAsc()
+                .stream()
+                .map(ProjectMapper::toDTO)
+                .toList();
+    }
 
     @Override
     public ProjectDTO createProject(ProjectDTO dto) {
@@ -61,13 +69,40 @@ public class ProjectServiceImpl implements ProjectService {
         project.setSlug(generateUniqueSlug(dto.getName()));
 
         try {
-            projectRepository.save(project);
+            project = projectRepository.save(project);
         } catch (DataIntegrityViolationException ex) {
             project.setSlug(generateUniqueSlug(dto.getName()));
-            projectRepository.save(project);
+            project = projectRepository.save(project);
         }
-
         return ProjectMapper.toDTO(project);
+    }
+
+    @Override
+    public ProjectDTO updateProject(ProjectDTO projectDTO, Long id) {
+        //Getting the Current Project Details From DB
+        Project existing = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        // Modify the managed entity
+        existing.setName(projectDTO.getName());
+        existing.setDescription(projectDTO.getDescription());
+        existing.setImageURL(projectDTO.getImageURL());
+        existing.setTechStacksUsed(projectDTO.getTechStacksUsed());
+        existing.setDifficultyLevel(projectDTO.getDifficultyLevel());
+        existing.setDeployedLink(projectDTO.getDeployedLink());
+        existing.setGithubLink(projectDTO.getGithubLink());
+        existing.setDisplayOrder(projectDTO.getDisplayOrder());
+        existing.setIsActive(projectDTO.getIsActive());
+
+        existing.setSlug(generateUniqueSlug(projectDTO.getName()));
+
+        Project updatedProject = null;
+        try {
+            updatedProject = projectRepository.save(existing);
+        }catch(Exception e){
+            throw new BadRequestException("Erro while Updating Project");
+        }
+        return ProjectMapper.toDTO(updatedProject);
     }
 
     /* ================= HELPERS ================= */

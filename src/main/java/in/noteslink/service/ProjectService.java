@@ -12,5 +12,7 @@ public interface ProjectService {
     ProjectDTO getActiveProjectBySlug(String slug);
 
     // Admin-side
+    List<ProjectDTO> getAllProjectsEitherActiveOrInActive();
     ProjectDTO createProject(ProjectDTO projectDTO);
+    ProjectDTO updateProject(ProjectDTO projectDTO, Long id);
 }

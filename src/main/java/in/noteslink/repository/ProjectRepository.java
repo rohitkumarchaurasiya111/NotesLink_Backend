@@ -27,6 +27,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      */
     Optional<Project> findBySlugAndIsActiveTrue(String slug);
 
+    //Gives all the Projects either Active or InActive in the Ascending order of display order
     /**
      * Admin use-case: fetch all projects (active + inactive)
      */

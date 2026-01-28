@@ -2,6 +2,7 @@ package in.noteslink.models.enums;
 
 public enum BookCategory {
     ENGINEERING,
+    PROGRAMMING,
     COMPUTER_SCIENCE,
     MATHEMATICS,
     MANAGEMENT,

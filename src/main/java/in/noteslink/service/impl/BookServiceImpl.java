@@ -64,6 +64,15 @@ public class BookServiceImpl implements BookService {
     /* ================= ADMIN SIDE ================= */
 
     @Override
+    public List<BookDTO> getAllBooksEitherActiveOrInactive() {
+        return bookRepository
+                .findAllByOrderByDisplayOrderAsc()
+                .stream()
+                .map(BookMapper::toDTO)
+                .toList();
+    }
+
+    @Override
     public BookDTO addBook(BookDTO bookDTO, MultipartFile file) {
         //Below Information are required to map to Book Entity. In order to save it to database.
         BookCategory enumCategory;
@@ -90,8 +99,11 @@ public class BookServiceImpl implements BookService {
             throw new BadRequestException("Error uploading book file: " + e.getMessage());
         }
 
-        String previewURL = response.get("previewUrl");
-        bookDTO.setDriveLink(previewURL);
+        String url = response.get("url");
+        bookDTO.setDriveLink(url);
+
+        //Generating Slug for this Title
+        bookDTO.setSlug(generateUniqueSlug(bookDTO.getTitle()));
 
         Book book = BookMapper.toEntity(bookDTO,enumCategory);
         return BookMapper.toDTO(bookRepository.save(book));
@@ -101,7 +113,7 @@ public class BookServiceImpl implements BookService {
     public BookDTO updateBook(BookDTO bookDTO){
         //Below Information are required to map to Book Entity. In order to save it to database.
         if(bookDTO.getDriveLink() == null || bookDTO.getId() == null){
-            throw new BadRequestException("Your Book Doesn't have Drive Link or the Id, Contact Your Admin");
+            throw new BadRequestException("Your Book Doesn't have Drive Link or the Id or the Slug, Contact Your Admin");
         }
         BookCategory enumCategory;
         try{
@@ -110,8 +122,30 @@ public class BookServiceImpl implements BookService {
             throw new BadRequestException("Invalid Book Category, Create this Book Category is Required");
         }
 
-        Book book =  bookRepository.save(BookMapper.toEntity(bookDTO, enumCategory));
-        return BookMapper.toDTO(book);
+        //Generating Slug for this New Title
+        bookDTO.setSlug(generateUniqueSlug(bookDTO.getTitle()));
+
+        //Getting the current Book Details From DB
+        Book existing = bookRepository.findById(bookDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        //Modify the managed entity
+        existing.setTitle(bookDTO.getTitle());
+        existing.setDescription(bookDTO.getDescription());
+        existing.setImageURL(bookDTO.getImageURL());
+        existing.setBookCategory(enumCategory);
+        existing.setDisplayOrder(bookDTO.getDisplayOrder());
+        existing.setSlug(bookDTO.getSlug());
+        existing.setIsActive(bookDTO.getIsActive());
+        existing.setAuthorName(bookDTO.getAuthorName());
+
+        Book updatedBook = null;
+        try{
+            updatedBook = bookRepository.save(existing);
+        }catch(Exception e){
+            throw new BadRequestException("Erro while Updating Book");
+        }
+        return BookMapper.toDTO(updatedBook);
     }
 
 

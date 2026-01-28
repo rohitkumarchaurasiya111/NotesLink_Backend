@@ -13,6 +13,7 @@ public interface BookService {
     BookDTO getActiveBookBySlug(String slug);
 
     // Admin-side
+    public List<BookDTO> getAllBooksEitherActiveOrInactive();
     public BookDTO addBook(BookDTO bookDTO, MultipartFile file);
     public BookDTO updateBook(BookDTO bookDTO);
 }
