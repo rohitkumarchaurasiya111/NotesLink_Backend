@@ -1,18 +1,17 @@
 package in.noteslink.models.dto;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data
+@Builder
 public class LoginResponseDTO {
-
-    private String token;
-    private String message;
-
-    public LoginResponseDTO(String token, String message) {
-        this.token = token;
-        this.message = message;
-    }
-
+    private String token;        // Sending Token as HttpOnly Cookie as it is more secure
+    private String email;
+    private String name;
+    private String role;
+    private Long collegeId;
+    private String collegeLogo;
 }

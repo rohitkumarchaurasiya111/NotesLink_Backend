@@ -48,7 +48,7 @@ public class MaterialServiceImpl implements MaterialService {
             categorizedMaterials.computeIfAbsent(m.getType(),k -> new ArrayList<>()).add(materialDTO);
         }
 
-        // 🔥 Sort INSIDE each MaterialType by displayOrder
+        // Sort INSIDE each MaterialType by displayOrder
         categorizedMaterials.values().forEach(list ->
                 list.sort(Comparator.comparing(MaterialDTO::getDisplayOrder))
         );

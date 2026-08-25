@@ -4,6 +4,7 @@ import in.noteslink.models.dto.MaterialDTO;
 import in.noteslink.models.entity.Material;
 import in.noteslink.models.entity.Subject;
 import in.noteslink.models.enums.MaterialType;
+import in.noteslink.util.AesUtil;
 
 //This class maps from Material Entity to MaterialDTO and MaterialDTO to Material Entity
 public class MaterialMapper {
@@ -28,7 +29,7 @@ public class MaterialMapper {
         materialDTO.setTitle(material.getTitle());
         materialDTO.setSubjectId(material.getSubject().getId());
         materialDTO.setType(material.getType().name());
-        materialDTO.setDriveLink(material.getDriveLink());
+        materialDTO.setDriveLink(AesUtil.encrypt(material.getDriveLink()));         //Sends encrypted Link to Frontend and then Frontend decrypts that
         materialDTO.setIsPremium(material.getIsPremium());
         materialDTO.setDisplayOrder(material.getDisplayOrder());
 

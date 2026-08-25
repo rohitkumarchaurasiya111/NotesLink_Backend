@@ -1,5 +1,6 @@
 package in.noteslink.service;
 
+import in.noteslink.models.dto.LoginResponseDTO;
 import in.noteslink.models.entity.User;
 
 public interface UserService {
@@ -11,5 +12,5 @@ public interface UserService {
     User createUser(String name, String email, String emailDomain);
 
     // Handle login/signup flow (returns JWT token)
-    public String loginOrSignUpWithGoogle(String idToken);
+    public LoginResponseDTO loginOrSignUpWithGoogle(String idToken);
 }

@@ -19,7 +19,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
      */
     @Query("""
            SELECT s FROM Subject s
-           WHERE (s.college IS NULL OR s.college.id = :collegeId)
+           WHERE (s.college.id = 1 OR s.college.id = :collegeId)
            AND s.year = :year
            ORDER BY s.name
            """)
