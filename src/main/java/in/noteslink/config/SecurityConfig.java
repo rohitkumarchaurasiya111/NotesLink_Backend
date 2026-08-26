@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())       //Not required in JWT Based AUthentication (because JWT is stateless)
                 .cors(Customizer.withDefaults())                                         //To allow cross origin
                 .authorizeHttpRequests(requests -> requests         //This Tells that any HTTP request on the server needs to be authenticated
-                        .requestMatchers("/api/auth/loginwithgoogle", "/api/users/colleges").permitAll()     //Will not authenticate these URLs generally used for Login and Register URLs
+                        .requestMatchers("/api/auth/loginwithgoogle", "/api/users/colleges", "/api/health").permitAll()     //Will not authenticate these URLs generally used for Login and Register URLs
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated());
