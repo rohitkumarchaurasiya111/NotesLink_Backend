@@ -7,9 +7,7 @@ import in.noteslink.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,13 +42,15 @@ public class AuthController {
         LoginResponseDTO loginResponseDTO = userService.loginOrSignUpWithGoogle(request.getIdToken());
 
         //Jwt Token securely Storing in the HTTP Cookie
-        Cookie cookie = new Cookie("noteslink_token", loginResponseDTO.getToken());
-        cookie.setHttpOnly(true);           //HttpOnly doesn't let Javascript see the value
-        cookie.setSecure(false);            //If true, Https can only be used
-        cookie.setPath("/");                //Cookie will be available in all routes
-        cookie.setMaxAge(7*24*60*60);       //Life Time of 7 days
+        ResponseCookie cookie = ResponseCookie.from("noteslink_token", loginResponseDTO.getToken())
+                .httpOnly(true)           //HttpOnly doesn't let Javascript see the value
+                .secure(true)             //If true, Https can only be used
+                .sameSite("None")           //Don't need same domain to call the API's
+                .path("/")               //Cookie will be available in all routes
+                .maxAge(7*24*60*60)       //Life Time of 7 days
+                .build();
 
-        response.addCookie(cookie);         //Adding the cookie in response
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());         //Adding the cookie in response
 
         loginResponseDTO.setToken("Calm Down, Sweetheart");
         return ResponseEntity.ok(loginResponseDTO);
